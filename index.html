@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>.secsc</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;
+  color: white;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+/* VIGNETTE */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.85));
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ENTER */
+#enter {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 6;
+}
+
+#enter span {
+  opacity: 0.65;
+  font-size: 1.2rem;
+  transition: 0.3s;
+}
+
+#enter:hover span {
+  opacity: 1;
+}
+
+/* MAIN */
+#main {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+/* CARD */
+#card {
+  padding: 26px 30px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 40px rgba(255,255,255,0.04),
+    inset 0 0 30px rgba(255,255,255,0.02);
+  text-align: center;
+}
+
+/* NAME */
+#name {
+  margin-bottom: 10px;
+  opacity: 0.7;
+  letter-spacing: 1px;
+}
+
+/* ASCII */
+pre {
+  font-size: 11px;
+  line-height: 11px;
+  margin: 12px 0 16px;
+}
+
+/* LINKS */
+.links a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  opacity: 0.55;
+  margin: 4px 0;
+  transition: 0.25s;
+}
+
+.links a:hover {
+  opacity: 1;
+}
+
+/* PARTICLES */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+/* CURSOR GLOW */
+#cursor {
+  position: fixed;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 60%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+<div id="cursor"></div>
+
+<div id="enter">
+  <span>click</span>
+</div>
+
+<div id="main">
+  <div id="card">
+    <div id="name"></div>
+
+<pre>
+ _._     _,-'""`-._
+(,-.`._,'(       |\`-/|
+    `-.-' \ )-`( , o o)
+          `-    \`_`"'-"
+</pre>
+
+    <div class="links">
+      <a href="https://instagram.com/yourname" target="_blank">instagram</a>
+      <a href="https://tiktok.com/@yourname" target="_blank">tiktok</a>
+      <a href="https://x.com/yourname" target="_blank">x</a>
+    </div>
+  </div>
+</div>
+
+<!-- MUSIC -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ENTER */
+enter.onclick = () => {
+  enter.style.display = "none";
+  main.style.display = "flex";
+  typeName();
+  music.volume = 0.25;
+  music.play();
+};
+
+/* TYPE EFFECT */
+const text = ".secsc";
+let i = 0;
+function typeName() {
+  if (i < text.length) {
+    name.innerHTML += text[i++];
+    setTimeout(typeName, 120);
+  }
+}
+
+/* PARTICLES */
+const canvas = particles;
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+resize();
+addEventListener("resize", resize);
+
+let dots = Array.from({length: 70}, () => ({
+  x: Math.random()*canvas.width,
+  y: Math.random()*canvas.height,
+  vx:(Math.random()-0.5)*0.15,
+  vy:(Math.random()-0.5)*0.15,
+  a: Math.random()*0.5 + 0.3
+}));
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  dots.forEach(d=>{
+    d.x+=d.vx; d.y+=d.vy;
+    if(d.x<0||d.x>canvas.width) d.vx*=-1;
+    if(d.y<0||d.y>canvas.height) d.vy*=-1;
+    ctx.fillStyle = `rgba(255,255,255,${d.a})`;
+    ctx.fillRect(d.x,d.y,1,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* CURSOR */
+addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+</script>
+
+</body>
+</html>
